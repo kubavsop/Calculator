@@ -1,12 +1,25 @@
 package com.example.myapplication
 
-sealed class Action {
-    data class Number(val number: Int) : Action()
-    object Clear : Action()
-    object Delete : Action()
-    object Decimal : Action()
-    object Calculate : Action()
-    object ChangeSign : Action()
-    data class Operation(val operation: com.example.myapplication.Operation) : Action()
+enum class Action(val symbol: String) {
+    CLEAR("AC"),
+    DECIMAL(","),
+    CALCULATE("="),
+    CHANGE_SIGN("±"),
+    ADD("+"),
+    SUBTRACT("-"),
+    MULTIPLY("×"),
+    DIVIDE("÷"),
+    REMAINDER("%"),
+    ZERO("0"),
+    ONE("1"),
+    TWO("2"),
+    THREE("3"),
+    FOUR("4"),
+    FIVE("5"),
+    SIX("6"),
+    SEVEN("7"),
+    EIGHT("8"),
+    NINE("9"),
 }
+
 

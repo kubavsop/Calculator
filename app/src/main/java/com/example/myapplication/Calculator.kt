@@ -1,6 +1,5 @@
 package com.example.myapplication
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.TabRowDefaults.Divider
 import androidx.compose.material.Text
@@ -12,50 +11,52 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.ui.theme.*
 
+
 @Composable
 fun Calculator(
-    modifier: Modifier = Modifier,
     state: State,
-    onAction: (Action) -> Unit
+    performDeletion: () -> Unit,
+    onAction: (Action) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
 
         Text(
             text = "Calculator",
             fontSize = TitleSize,
-            color = TitleTextСolor,
+            color = DarkOnBackground,
             fontFamily = GoogleSans,
             fontWeight = FontWeight.Medium
         )
 
         Column(
+            verticalArrangement = Arrangement.spacedBy(DefaultPadding),
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter),
-            verticalArrangement = Arrangement.spacedBy(DefaultPadding)
+                .align(Alignment.BottomCenter)
         ) {
 
             Text(
-                text = state.firstNumber + (state.operation?.symbol ?: "") + state.secondNumber,
+                text = state.result,
                 textAlign = TextAlign.Left,
-                modifier = Modifier
-                    .fillMaxWidth(),
                 fontSize = MainTextSze,
-                color = MainTextColor,
+                color = DarkPrimary,
                 maxLines = 1,
                 fontFamily = GoogleSans,
                 fontWeight = FontWeight.Medium,
+                modifier = Modifier
+                    .fillMaxWidth()
             )
 
             deleteButton(
-                onclick = { onAction(Action.Delete) },
+                onclick = { performDeletion() },
                 modifier = Modifier
-                    .align(Alignment.End),
+                    .align(Alignment.End)
             )
 
             Divider(
                 thickness = 1.dp,
-                color = LineColor
+                color = DarkOutlineVariant
             )
 
             SetButtons(onAction = onAction)
@@ -67,31 +68,11 @@ fun Calculator(
 @Composable
 fun SetButtons(onAction: (Action) -> Unit) {
     val rows = listOf(
-        listOf(
-            Action.Clear,
-            Action.ChangeSign,
-            Action.Operation(Operation.Remainder),
-            Action.Operation(Operation.Divide)
-        ),
-        listOf(
-            Action.Number(7),
-            Action.Number(8),
-            Action.Number(9),
-            Action.Operation(Operation.Multiply)
-        ),
-        listOf(
-            Action.Number(4),
-            Action.Number(5),
-            Action.Number(6),
-            Action.Operation(Operation.Subtract)
-        ),
-        listOf(
-            Action.Number(1),
-            Action.Number(2),
-            Action.Number(3),
-            Action.Operation(Operation.Add)
-        ),
-        listOf(Action.Number(0), Action.Decimal, Action.Calculate)
+        listOf(Action.CLEAR, Action.CHANGE_SIGN, Action.REMAINDER, Action.DIVIDE),
+        listOf(Action.SEVEN, Action.EIGHT, Action.NINE, Action.MULTIPLY),
+        listOf(Action.FOUR, Action.FIVE, Action.SIX, Action.SUBTRACT),
+        listOf(Action.ONE, Action.TWO, Action.THREE, Action.ADD),
+        listOf(Action.ZERO, Action.DECIMAL, Action.CALCULATE)
     )
 
     for (row in rows) {
@@ -99,61 +80,45 @@ fun SetButtons(onAction: (Action) -> Unit) {
     }
 }
 
-
 @Composable
 fun SetButtonRow(buttons: List<Action>, onAction: (Action) -> Unit) {
     Row(
+        horizontalArrangement = Arrangement.spacedBy(DefaultPadding),
         modifier = Modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(DefaultPadding)
+            .fillMaxWidth()
     ) {
-        for (button in buttons) {
-            if (getSymbol(button) == "0") {
-                FirstStyleButton(symbol = "0",
-                    modifier = Modifier
-                        .background(FirstButtonColor)
-                        .weight(ZeroButtonWeight)
-                        .aspectRatio(ZeroButtonWeight),
+        for (i in 0..buttons.size - 2) {
+            if (buttons[i] == Action.ZERO) {
+                defaultButton(
+                    symbol = "0",
                     onclick = {
-                        onAction(Action.Number(0))
-                    }
+                        onAction(buttons[i])
+                    },
+                    modifier = Modifier
+                        .weight(ZeroButtonWeight)
+                        .aspectRatio(ZeroButtonWeight)
                 )
             } else {
-                if (button != buttons[buttons.size - 1]) {
-                    FirstStyleButton(symbol = getSymbol(button),
-                        modifier = Modifier
-                            .background(FirstButtonColor)
-                            .weight(ButtonWeight)
-                            .aspectRatio(ButtonWeight),
-                        onclick = {
-                            onAction(button)
-                        }
-                    )
-                } else {
-                    SecondStyleButton(symbol = getSymbol(button),
-                        modifier = Modifier
-                            .background(SecondButtonColor)
-                            .weight(ButtonWeight)
-                            .aspectRatio(ButtonWeight),
-                        onclick = {
-                            onAction(button)
-                        }
-                    )
-                }
+                defaultButton(
+                    symbol = buttons[i].symbol,
+                    onclick = {
+                        onAction(buttons[i])
+                    },
+                    modifier = Modifier
+                        .weight(ButtonWeight)
+                        .aspectRatio(ButtonWeight)
+                )
             }
         }
+        accentButton(
+            symbol = buttons[buttons.size - 1].symbol,
+            onclick = {
+                onAction(buttons[buttons.size - 1])
+            },
+            modifier = Modifier
+                .weight(ButtonWeight)
+                .aspectRatio(ButtonWeight)
+        )
     }
 }
 
-
-fun getSymbol(action: Action): String {
-    return when (action) {
-        is Action.Clear -> "AC"
-        is Action.Operation -> action.operation.symbol
-        is Action.ChangeSign -> "±"
-        is Action.Decimal -> ","
-        is Action.Calculate -> "="
-        is Action.Number -> action.number.toString()
-        is Action.Delete -> ""
-    }
-}

@@ -1,38 +1,31 @@
 package com.example.myapplication
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.ui.theme.*
 
 @Composable
-fun FirstStyleButton(
+fun defaultButton(
     onclick: () -> Unit,
     symbol: String,
     modifier: Modifier
 ) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .clip(ButtonShape)
-            .clickable { onclick() }
-            .then(modifier)
+    Button(
+        onClick = { onclick() },
+        shape = ButtonShape,
+        colors = ButtonDefaults.buttonColors(backgroundColor = DarkSecondaryContainer),
+        modifier = modifier
     ) {
         Text(
             text = symbol,
             fontSize = ButtonTextSize,
-            color = FirstSymbolColor,
+            color = DarkOnSecondaryContainer,
             fontFamily = GoogleSans,
             fontWeight = FontWeight.Medium,
         )
@@ -40,22 +33,21 @@ fun FirstStyleButton(
 }
 
 @Composable
-fun SecondStyleButton(
+fun accentButton(
     onclick: () -> Unit,
     symbol: String,
-    modifier: Modifier
+    modifier: Modifier,
 ) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .clip(ButtonShape)
-            .clickable { onclick() }
-            .then(modifier)
+    Button(
+        onClick = { onclick() },
+        shape = ButtonShape,
+        colors = ButtonDefaults.buttonColors(backgroundColor = DarkTertiaryContainer),
+        modifier = modifier
     ) {
         Text(
             text = symbol,
             fontSize = ButtonTextSize,
-            color = SecondSymbolColor,
+            color = DarkOnTertiaryContainer,
             fontFamily = GoogleSans,
             fontWeight = FontWeight.Medium,
         )
@@ -74,7 +66,7 @@ fun deleteButton(
         Icon(
             painter = painterResource(R.drawable.delete_button),
             contentDescription = "Delete Button",
-            tint = DeleteButtonColor,
+            tint = DarkOnSurface,
             modifier = Modifier
                 .width(24.dp)
                 .height(18.dp)

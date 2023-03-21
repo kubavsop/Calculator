@@ -6,5 +6,5 @@ const val ButtonWeight = 1f
 const val ZeroButtonWeight = 2.2f
 
 val TitleSize = 28.sp
-val ButtonTextSize = 36.sp
+val ButtonTextSize = 32.sp
 val MainTextSze = 57.sp
