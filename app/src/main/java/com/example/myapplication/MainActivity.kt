@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
             val state = viewModel.state
             Calculator(
                 state = state,
-                performDeletion = viewModel::performDeletion,
+                onDelete = viewModel::onDelete,
                 onAction = viewModel::onAction,
                 modifier = Modifier
                     .fillMaxSize()

@@ -11,6 +11,9 @@ class CalculatorViewModel : ViewModel() {
     private companion object {
         const val MAX_LENGTH = 15
         const val ERROR = "Error"
+        const val COMMA = ","
+        const val DOT = "."
+        const val MINUS = "-"
         const val EMPTY_STRING = ""
     }
 
@@ -34,7 +37,7 @@ class CalculatorViewModel : ViewModel() {
         }
     }
 
-    fun performDeletion() {
+    fun onDelete() {
         if (isError) return
         when {
             state.secondNumber.isNotEmpty() -> state = state.copy(
@@ -52,18 +55,18 @@ class CalculatorViewModel : ViewModel() {
 
     private fun getResult() {
         isError = false
-        state = state.copy(result = state.firstNumber + (state.operation ?: "") + state.secondNumber)
+        state = state.copy(result = state.firstNumber + (state.operation ?: EMPTY_STRING) + state.secondNumber)
     }
 
     private fun performSignСhange() {
-        if (state.firstNumber != "-" && state.firstNumber.isNotEmpty()) {
+        if (state.firstNumber != MINUS && state.firstNumber.isNotEmpty()) {
 
             performCalculation()
             if (isError) return
 
-            val result = -state.firstNumber.replace(",", ".").toDouble()
+            val result = -state.firstNumber.replace(COMMA, DOT).toDouble()
             state = state.copy(
-                firstNumber = result.toString().replace(".", ","),
+                firstNumber = result.toString().replace(DOT, COMMA),
             )
 
             if (result == result.toInt().toDouble()) {
@@ -73,7 +76,7 @@ class CalculatorViewModel : ViewModel() {
             }
 
         } else if (state.firstNumber.isEmpty()) {
-            state = state.copy(firstNumber = "-")
+            state = state.copy(firstNumber = MINUS)
         }
         getResult()
     }
@@ -81,15 +84,15 @@ class CalculatorViewModel : ViewModel() {
     private fun performCalculation() {
         if (
             isError || (state.operation == Action.DIVIDE.symbol || state.operation == Action.REMAINDER.symbol)
-            && state.secondNumber.replace(",", ".").toDoubleOrNull() == 0.0
+            && state.secondNumber.replace(COMMA, DOT).toDoubleOrNull() == 0.0
         ) {
             isError = true
             state = State(result = ERROR)
             return
         }
 
-        val firstNumber = state.firstNumber.replace(",", ".").toDoubleOrNull()
-        val secondNumber = state.secondNumber.replace(",", ".").toDoubleOrNull()
+        val firstNumber = state.firstNumber.replace(COMMA, DOT).toDoubleOrNull()
+        val secondNumber = state.secondNumber.replace(COMMA, DOT).toDoubleOrNull()
 
         if (firstNumber != null && secondNumber != null) {
             val result = when (state.operation) {
@@ -102,7 +105,7 @@ class CalculatorViewModel : ViewModel() {
             }
 
             state = state.copy(
-                firstNumber = result.toString().replace(".", ","),
+                firstNumber = result.toString().replace(DOT, COMMA),
                 secondNumber = EMPTY_STRING,
                 operation = null
             )
@@ -119,7 +122,7 @@ class CalculatorViewModel : ViewModel() {
         if (state.secondNumber.isNotEmpty()) {
             performCalculation()
             enterOperation(operation)
-        } else if (state.firstNumber != "-" && state.firstNumber.isNotEmpty()) {
+        } else if (state.firstNumber != MINUS && state.firstNumber.isNotEmpty()) {
             state = state.copy(operation = operation)
         }
         getResult()
@@ -127,12 +130,12 @@ class CalculatorViewModel : ViewModel() {
 
     private fun enterDecimal() {
         if (isError) return
-        if (state.operation == null && !state.firstNumber.contains(",")
-            && state.firstNumber != "-" && state.firstNumber.isNotEmpty()
+        if (state.operation == null && !state.firstNumber.contains(COMMA)
+            && state.firstNumber != MINUS && state.firstNumber.isNotEmpty()
         ) {
-            state = state.copy(firstNumber = state.firstNumber + ",")
-        } else if (!state.secondNumber.contains(",") && state.secondNumber != "") {
-            state = state.copy(secondNumber = state.secondNumber + ",")
+            state = state.copy(firstNumber = state.firstNumber + COMMA)
+        } else if (!state.secondNumber.contains(COMMA) && state.secondNumber != EMPTY_STRING) {
+            state = state.copy(secondNumber = state.secondNumber + COMMA)
         }
         getResult()
     }

@@ -15,7 +15,7 @@ import com.example.myapplication.ui.theme.*
 @Composable
 fun Calculator(
     state: State,
-    performDeletion: () -> Unit,
+    onDelete: () -> Unit,
     onAction: (Action) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -49,7 +49,7 @@ fun Calculator(
             )
 
             deleteButton(
-                onclick = { performDeletion() },
+                onclick = { onDelete() },
                 modifier = Modifier
                     .align(Alignment.End)
             )
